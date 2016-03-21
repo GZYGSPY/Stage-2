@@ -25,17 +25,19 @@
         var value = aqiValueInput.value.trim();
         if (validate(city, value)) {
             aqiData[city] = value;
-        } else {
-            alert("你输入的信息有误，城市名必须为中英文字符，空气质量指数必须为整数");
         }
     }
 
     function validate(city, value) {
-        if (regCNEN.test(city) && regNUM.test(value)) {
-            return true;
-        } else {
+        if (!regCNEN.test(city)) {
+            alert("你输入的信息有误，城市名必须为中英文字符");
             return false;
         }
+        if (!regNUM.test(value)) {
+            alert("你输入的信息有误，空气质量指数必须为整数");
+            return false;
+        }
+        return true;
     }
 
     /**
