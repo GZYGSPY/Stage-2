@@ -11,7 +11,7 @@
     var aqiCityInput = document.querySelector("#aqi-city-input");
     var aqiValueInput = document.querySelector("#aqi-value-input");
     var aqiTable = document.querySelector("#aqi-table");
-    var tableHeader = "<tr><td>城市</td><td>空气质量</td><td>操作</td></tr>";
+    var tableHeader = createTableHeader();
 
     var regCNEN = /^[\u4e00-\u9fa5a-zA-Z]+$/;
     var regNUM = /^[0-9]+$/;
@@ -45,12 +45,34 @@
      */
     function renderAqiList() {
         //第一步，表头
-        var result = tableHeader;
+        var childs = [tableHeader];
         //第二步，表项
         for (var city in aqiData) {
-            result += makeTr(city, aqiData[city]);
+            childs.push(createTr(city, aqiData[city]));
         }
-        aqiTable.innerHTML = city ? result : "";
+        //清除所有子元素
+        clearChild(aqiTable);
+        if (city) {
+            for (var i in childs) {
+                aqiTable.appendChild(childs[i]);
+            }
+        }
+    }
+
+    /**
+     * 清楚全部子元素
+     * @param element
+     */
+    function clearChild(element) {
+        element.innerHTML = "";
+    }
+
+    function createTableHeader() {
+        var element = createElement("tr");
+        element.appendChild(createElement("td", "城市"));
+        element.appendChild(createElement("td", "空气质量"));
+        element.appendChild(createElement("td", "操作"));
+        return element;
     }
 
     /**
@@ -59,8 +81,32 @@
      * @param value 值
      * @returns {string} HTML代码
      */
-    function makeTr(city, value) {
-        return "<tr><td>" + city + "</td><td>" + value + "</td><td><button class=\"del-btn\" data-city=\"" + city + "\">删除</button></td></tr>"
+    function createTr(city, value) {
+        var tr = document.createElement("tr");
+        var td1 = document.createElement("td");
+        var td2 = document.createElement("td");
+        var td3 = document.createElement("td");
+
+        td1.innerText = city;
+        tr.appendChild(td1);
+
+        td2.innerText = value;
+        tr.appendChild(td2);
+
+        var button = createElement("button");
+        button.dataset.city = city;
+        button.classList.add("del-btn");
+        button.innerText = "删除";
+        td3.appendChild(button)
+        tr.appendChild(td3);
+
+        return tr;
+    }
+
+    function createElement(tegName, innerText) {
+        var element = document.createElement(tegName);
+        innerText ? element.innerText = innerText : "";
+        return element;
     }
 
     /**
