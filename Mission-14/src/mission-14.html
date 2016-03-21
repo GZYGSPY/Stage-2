@@ -50,24 +50,28 @@
         var no = 0;
         for (var i in aqiData) {
             var temp = aqiData[i];
-            if(temp[1] > 60) {
-                result += makeList("第" + cn_num[no++] + "名：" + temp[0] + "，" + temp[1]);
+            if (temp[1] > 60) {
+                result += makeList(++no, temp);
             }
         }
 
         //将结果设置到aqi_list对象的Html代码中
         aqi_list.innerHTML = result;
 
-        /**
-         * 创建一个li标签
-         * @param 将要在list中间添加的文字
-         * @returns {string} 返回<li>完整标签
-         */
-        function makeList(text) {
-            return "<li>" + text + "</li>";
-        }
+
     })();
 
+    /**
+     * 创建一个li标签
+     * @param 将要在list中间添加的文字
+     * @returns {string} 返回<li>完整标签
+     */
+    function makeList(order, data) {
+        if (typeof cn_num == "undefined") {
+            cn_num = ["零", "一", "二", "三", "四", "五", "六"];
+        }
+        return "<li>" + "第" + cn_num[order] + "名：" + data[0] + "，" + data[1] + "</li>";
+    }
 </script>
 </body>
 </html>
