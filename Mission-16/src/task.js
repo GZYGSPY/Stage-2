@@ -44,15 +44,13 @@
      * 渲染aqi-table表格
      */
     function renderAqiList() {
-        var result = "";
         //第一步，表头
-        result += tableHeader;
+        var result = tableHeader;
         //第二步，表项
         for (var city in aqiData) {
-            var value = aqiData[city];
-            result += makeTr(city, value);
+            result += makeTr(city, aqiData[city]);
         }
-        aqiTable.innerHTML = result;
+        aqiTable.innerHTML = city ? result : "";
     }
 
     /**
@@ -62,8 +60,7 @@
      * @returns {string} HTML代码
      */
     function makeTr(city, value) {
-        var elment = "<tr><td>" + city + "</td><td>" + value + "</td><td><button class=\"del-btn\" city=\"" + city + "\">删除</button></td></tr>"
-        return elment;
+        return "<tr><td>" + city + "</td><td>" + value + "</td><td><button class=\"del-btn\" data-city=\"" + city + "\">删除</button></td></tr>"
     }
 
     /**
@@ -81,13 +78,7 @@
      */
     function delBtnHandle() {
         // do sth.
-        for (var i in this.attributes) {
-            var attr = this.attributes[i];
-            if (attr.name == "city") {
-                delete aqiData[attr.value];
-            }
-        }
-
+        delete aqiData[this.dataset.city];
         renderAqiList();
     }
 
