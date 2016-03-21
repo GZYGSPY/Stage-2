@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <title>Task-29</title>
     <style>
+        body {
+            font-size: 25px;
+            font-family: 'Microsoft yahei';
+        }
         input{
             border: 1px solid #a8a8a8;
-            border-radius: 4px;
+            font-size: 25px;
+            border-radius: 5px;
         }
         .msg {
             color: #a8a8a8;
@@ -24,15 +29,45 @@
         .right > .msg {
             color: #55b53a;
         }
+        #ve-box {
+            position: relative;
+            padding: 100px;
+        }
+        #ve-box > label > span {
+            position: absolute;
+            left: 0;
+            line-height: 80px;
+            font-weight: 700;
+        }
+        #ve-box > a {
+            display: inline-block;
+            width: 140px;
+            height: 80px;
+            float: right;
+            line-height: 80px;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background: #2f79ba;
+        }
+        #myName {
+            display: inline-block;
+            height: 80px;
+            line-height: 80px;
+            width: 670px;
+        }
     </style>
 </head>
 <body>
     <div id="ve-box">
+        <a id="validator" href="javascirpt:;">验证</a>
+        
         <label><span>名称</span><input id="myName"  name="myName" type="text" ></label> 
         <p class="msg" id="msg">必填，长度为4~16个字符</p>
     </div>
     
-    <a id="validator" href="javascirpt:;">验证</a>
+    
     <script src = "index.zjruan.js"></script>
 </body>
 </html>
