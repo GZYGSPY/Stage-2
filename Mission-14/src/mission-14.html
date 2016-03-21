@@ -43,13 +43,16 @@
 
         //对aqiData数据进行排序
         aqiData.sort(function (a, b) {
-            return a[1] - b[1];
+            return b[1] - a[1];
         });
 
         //遍历数据，组合最终结果
+        var no = 0;
         for (var i in aqiData) {
             var temp = aqiData[i];
-            result += makeList("第" + cn_num[i] + "名：" + temp[0] + "，" + temp[1]);
+            if(temp[1] > 60) {
+                result += makeList("第" + cn_num[no++] + "名：" + temp[0] + "，" + temp[1]);
+            }
         }
 
         //将结果设置到aqi_list对象的Html代码中
