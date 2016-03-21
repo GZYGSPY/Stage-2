@@ -22,17 +22,13 @@
     (function () {
         var aqiDisplay = document.getElementById("aqi-display");
         var aqiInput = document.getElementById("aqi-input");
-        document.getElementById("button").onclick = function (_aqiDisplay, _aqiInput) {
-            return function () {
-                if (_aqiInput.value) {
-                    _aqiDisplay.innerText = _aqiInput.value;
-                } else {
-                    _aqiDisplay.innerText = "尚无录入";
-                }
+        document.getElementById("button").onclick = function () {
+            if (aqiInput.value) {
+                aqiDisplay.innerText = aqiInput.value;
+            } else {
+                aqiDisplay.innerText = "尚无录入";
             }
-        }(aqiDisplay, aqiInput);
-
-
+        };
     })();
 
 </script>
