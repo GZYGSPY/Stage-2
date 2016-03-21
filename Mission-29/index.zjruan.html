@@ -31,8 +31,14 @@
             color: #55b53a;
         }
         #ve-box {
-            position: relative;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;            
+            width: 850px;            
             padding: 100px;
+            margin: auto;      
         }
         #ve-box > label > span {
             position: absolute;
@@ -67,7 +73,6 @@
         <label><span>名称</span><input id="myName"  name="myName" type="text" ></label> 
         <p class="msg" id="msg">必填，长度为4~16个字符</p>
     </div>
-    
     
     <script src = "index.zjruan.js"></script>
 </body>
