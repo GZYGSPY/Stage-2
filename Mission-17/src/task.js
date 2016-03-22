@@ -51,16 +51,36 @@
     };
 
 // 记录当前页面的表单选项
+    var DAY = "day", WEEK = "week", MONTH = "month";
+    var color = ["#7c8489", "#4fb3a4", "#ff7073", "#f5b977", "#fdfc7f"];
+    var histogramWidth = {};histogramWidth[DAY] = 10;histogramWidth[WEEK] = 70;histogramWidth[MONTH] = 300;
+    var aqiChartWrap = document.querySelector(".aqi-chart-wrap");
+
     var pageState = {
         nowSelectCity: -1,
-        nowGraTime: "day"
+        nowGraTime: DAY
     }
 
     /**
-     * 渲染图表
+     * 渲染图表 <div style="height:500px;width: 10px; background: black" title="sad1"></div>
      */
     function renderChart() {
-        console.log(chartData);
+        aqiChartWrap.innerHTML = "";
+        for (var date in chartData.data) {
+            var histogram = document.createElement("div");
+            histogram.style.height = chartData.data[date];
+            histogram.style.background = getColor();
+            histogram.title = date + ":" + chartData.data[date];
+            histogram.classList.add(chartData.opt.time);
+            aqiChartWrap.appendChild(histogram);
+        }
+    }
+
+    /**
+     * 获取颜色
+     */
+    function getColor() {
+        return color[Math.round(Math.random() * (color.length - 1))];
     }
 
     /**
@@ -131,13 +151,19 @@
         // 处理好的数据存到 chartData 中
         chartData.data = {}
         var aqiCity = aqiSourceData[chartData.opt.city];
-        if (chartData.opt.time == "day") {
+        if (chartData.opt.time == DAY) {
             chartData.data = aqiCity;
         } else {
             chartData.data = getAverages(aqiCity, chartData.opt.time);
         }
     }
 
+    /**
+     * 获取平均值数据
+     * @param aqiCity 城市数据
+     * @param mode 模式 (MONTH或者WEEK)
+     * @returns 平均数数据
+     */
     function getAverages(aqiCity, mode) {
         var result = {}, first = null, last = null, vernier, count = 0, sum = 0;
         for (var i in aqiCity) {
@@ -145,7 +171,7 @@
             if (first == null) {
                 first = vernier;
             }
-            if (mode == "month" ? first.getMonth() != vernier.getMonth() : vernier - first > 518400000) {
+            if (mode == MONTH ? first.getMonth() != vernier.getMonth() : vernier - first > 518400000) {
                 result[getDateStr(first) + "-" + getDateStr(last)] = sum / count;
                 sum = 0;
                 count = 0;
