@@ -45,7 +45,7 @@
             for (var i in source.children) {
                 if (!isNaN(i)) {
                     var li = source.children[i];
-                    data.push([li.childNodes[0].data.substr(0, 2), li.childNodes[1].innerText]);
+                    data.push([resolveCity(li.childNodes[0].data), li.childNodes[1].innerText]);
                 }
             }
         }
@@ -61,6 +61,10 @@
 
         return data;
 
+    }
+
+    function resolveCity(data) {
+        return data.substr(0, data.indexOf("空气质量："));
     }
 
     /**
