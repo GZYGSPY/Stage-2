@@ -54,7 +54,7 @@
     var DAY = "day", WEEK = "week", MONTH = "month";
     var color = ["#7c8489", "#4fb3a4", "#ff7073", "#f5b977", "#fdfc7f"];
     var histogramWidth = {};histogramWidth[DAY] = 10;histogramWidth[WEEK] = 70;histogramWidth[MONTH] = 300;
-    var aqiChartWrap = document.querySelector(".aqi-chart-wrap");
+    var histogramWarp = document.querySelector(".histogram-wrap");
 
     var pageState = {
         nowSelectCity: -1,
@@ -65,14 +65,14 @@
      * 渲染图表 <div style="height:500px;width: 10px; background: black" title="sad1"></div>
      */
     function renderChart() {
-        aqiChartWrap.innerHTML = "";
+        histogramWarp.innerHTML = "";
         for (var date in chartData.data) {
             var histogram = document.createElement("div");
             histogram.style.height = chartData.data[date];
             histogram.style.background = getColor();
             histogram.title = date + ":" + chartData.data[date];
             histogram.classList.add(chartData.opt.time);
-            aqiChartWrap.appendChild(histogram);
+            histogramWarp.appendChild(histogram);
         }
     }
 
