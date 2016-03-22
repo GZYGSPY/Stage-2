@@ -57,6 +57,9 @@
         showMsg: function (msg) {
             // alert(msg);  
             msgBox.innerText = msg;
+            setTimeout(function () {
+                msgBox.innerText = "";
+            },2000)
         },
         // 更新ui
         updateUIByArr: function () {
@@ -77,6 +80,9 @@
         },
         isFull: function (parentNode) {
             return parentNode.children.length >= config.fullNum;
+        },
+        isNumRange: function (num,lowerLimit, upperLimit) {
+            return num >= lowerLimit && num <= upperLimit;
         }
         
     }
@@ -136,18 +142,18 @@
             switch(className){
                 // 按钮：左侧进 
                 case 'leftIn':
-                    velidate_result = velidate.inputNotNull() && !velidate.isFull(listEle); // 操作验证，判断操作是否成功
-                    msg = velidate.inputNotNull() ? "队列已满" : "输入数字无效";
                     value = inputBox.value;
+                    velidate_result = velidate.inputNotNull() && velidate.isNumRange(parseInt(value),10,100) && !velidate.isFull(listEle); // 操作验证，判断操作是否成功
+                    msg = velidate.inputNotNull() ? velidate.isNumRange(parseInt(value),10,100) ? "输入数字无效" : "数字超出范围" : "队列已满" ;
                     child = velidate_result ? domUtil.createLiElement(value) : ""; // 创建子节点
                     handler = domUtil.appendFirst; // 获取处理函数
                     break;
                     
                 // 按钮：右侧进     
                 case 'rightIn':
-                    velidate_result = velidate.inputNotNull() && !velidate.isFull(listEle);
-                    msg = velidate.inputNotNull() ? "队列已满" : "输入数字无效";
                     value = inputBox.value;
+                    velidate_result = velidate.inputNotNull() && velidate.isNumRange(parseInt(value),10,100) && !velidate.isFull(listEle);
+                    msg = velidate.inputNotNull() ? velidate.isNumRange(parseInt(value),10,100) ? "输入数字无效" : "数字超出范围" : "队列已满" ;
                     child = velidate_result ? domUtil.createLiElement(value) : ""; // 创建子节点
                     handler = domUtil.appendLast; // 获取处理函数
                     break;
