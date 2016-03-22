@@ -11,7 +11,7 @@
     var inputBox = document.querySelector('#inputBox');
     
     // 数字验证
-    var numReg = /^\s+$/;
+    var numReg = /^\s*$/;
     
     var dataCache = {
         valueList:[],
@@ -28,7 +28,7 @@
             var liEle = document.createElement('li');
             var firstChild = listEle.firstChild;
             for(var i = 0, len = valList.length; i < len; i++){
-                if(!velidate.inputIsNull(valList[i]) && valList[i]!== ""){
+                if(!velidate.inputIsNull(valList[i])){
                     var tempNode = liEle.cloneNode();
                     tempNode.innerText = valList[i];                
                     listEle.insertBefore(tempNode,firstChild);  
@@ -42,7 +42,7 @@
             var valList = value.split(/[\s|,|，|、|　]+/);
             var liEle = document.createElement('li');            
             for(var i = 0, len = valList.length; i < len; i++){
-                if(!velidate.inputIsNull(valList[i]) && valList[i]!== ""){
+                if(!velidate.inputIsNull(valList[i])){
                     var tempNode = liEle.cloneNode();
                     tempNode.innerText = valList[i];                
                     listEle.insertBefore(tempNode,null); 
