@@ -1,0 +1,39 @@
+ul {
+    margin: 0;
+    padding: 0;
+}
+li {
+    list-style: none;
+    transition: 1s;
+}
+a {
+    text-decoration: none;
+}
+.btn {
+    color: #fff;
+    padding: 5px 10px;
+    background: #337ab7;
+}
+.clearfix:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+.option{
+    width: 600px;
+    margin: auto;
+}
+.data-list {
+    text-align: center;
+}
+.data-list > li {
+    display: inline-block;
+    padding: 10px;
+    background: lightblue;
+    color: #fff;
+    margin: 10px;
+}
+.data-list > li > strong {
+    color: #fff;
+    background: red;
+}
