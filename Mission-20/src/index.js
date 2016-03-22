@@ -17,7 +17,7 @@
         valueList:[],
         elementList:[]
     };
-    window.ar = dataCache;
+    
     /**
      * dom 帮助工具
      */
@@ -90,6 +90,21 @@
     /**
      * btn 元素点击事件处理函数
      * @param [event] evt 点击事件 
+     * 为btns 标签绑定事件，实现对内部的按钮的事件委托机制
+     * 当点击事件发生后，判断点击的target，来选择相应的逻辑
+     * 
+     * 委托的简单猜想: （伪代码）
+     * 
+     * function delegate(parentSeletor, selector, eventType, callback){
+     *  parentSeletor.addEventListener(eventType,function(evt){
+     *      var target = evt.target || window.target;
+     *      if( target.classList.contains(selector.substr(1))){
+     *          var childevt = document.createEvent('MouseEvents')
+     *          childevt.initEvent();
+     *          callback(childevt);
+     *      }
+     *  }) 
+     * }
      */
     function btnClickHanlder(evt) {
         var target = evt.target || window.target;
