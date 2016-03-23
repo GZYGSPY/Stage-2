@@ -53,7 +53,10 @@
 // 记录当前页面的表单选项
     var DAY = "day", WEEK = "week", MONTH = "month";
     var color = ["#7c8489", "#4fb3a4", "#ff7073", "#f5b977", "#fdfc7f"];
-    var histogramWidth = {};histogramWidth[DAY] = 10;histogramWidth[WEEK] = 70;histogramWidth[MONTH] = 300;
+    var histogramWidth = {};
+    histogramWidth[DAY] = 10;
+    histogramWidth[WEEK] = 70;
+    histogramWidth[MONTH] = 300;
     var histogramWarp = document.querySelector(".histogram-wrap");
 
     var pageState = {
@@ -147,20 +150,20 @@
         // 处理好的数据存到 chartData 中
         chartData.data = {}
         var aqiCity = aqiSourceData[chartData.opt.city];
-        if (chartData.opt.time == DAY) {
-            chartData.data = aqiCity;
-        } else {
-            chartData.data = getAverages(aqiCity, chartData.opt.time);
-        }
+        chartData.data = getAverages(aqiCity, chartData.opt.time);
     }
 
     /**
      * 获取平均值数据
      * @param aqiCity 城市数据
-     * @param mode 模式 (MONTH或者WEEK)
+     * @param mode 模式 (DAT或者MONTH或者WEEK)
      * @returns 平均数数据
      */
     function getAverages(aqiCity, mode) {
+        if (mode == DAY) {
+            return aqiCity;
+        }
+
         var result = {}, first = null, last = null, vernier, count = 0, sum = 0;
         for (var i in aqiCity) {
             vernier = new Date(i);
