@@ -47,7 +47,8 @@
 // 用于渲染图表的数据
     var chartData = {
         opt: {city: "", time: ""},
-        data: {}
+        data: {},
+        temp: {}
     };
 
 // 记录当前页面的表单选项
@@ -149,8 +150,14 @@
         // 将原始的源数据处理成图表需要的数据格式
         // 处理好的数据存到 chartData 中
         chartData.data = {}
-        var aqiCity = aqiSourceData[chartData.opt.city];
-        chartData.data = getAverages(aqiCity, chartData.opt.time);
+        var timpName = chartData.opt.city + ":" + chartData.opt.time;
+        if(typeof chartData.temp[timpName] == "undefined") {
+            var aqiCity = aqiSourceData[chartData.opt.city];
+            chartData.data = getAverages(aqiCity, chartData.opt.time);
+            chartData.temp[timpName] = chartData.data;
+        } else {
+            chartData.data = chartData.temp[timpName];
+        }
     }
 
     /**
