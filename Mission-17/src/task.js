@@ -120,9 +120,6 @@
         for (var i = 0, len = radios.length; i < len; i++) {
             var checkedRadio = radios[i];
             checkedRadio.addEventListener("click", graTimeChange);
-            if (checkedRadio.checked) {
-                chartData.opt.time = checkedRadio.value;
-            }
         }
     }
 
@@ -137,7 +134,6 @@
             option.innerText = i;
             citySelect.options.add(option);
         }
-        chartData.opt.city = citySelect.value;
         // 给select设置事件，当选项发生变化时调用函数citySelectChange
         citySelect.addEventListener("click", citySelectChange);
 
@@ -188,6 +184,13 @@
         return result;
     }
 
+    /**
+     * 初始化设置
+     */
+    function initOpt() {
+        chartData.opt.city = document.querySelector("#city-select").value;
+        chartData.opt.time = document.querySelector("[name=\"gra-time\"][checked=\"checked\"]").value;
+    }
 
     /**
      * 初始化函数
@@ -196,6 +199,7 @@
         initGraTimeForm()
         initCitySelector();
         initAqiChartData();
+        initOpt();
     }
 
     init();
