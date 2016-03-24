@@ -29,6 +29,9 @@
 
 <script type="text/javascript">
 
+    var resort = document.getElementById("resort");
+    var source = document.getElementById("source");
+    var aqiData = null;
     /**
      * getData方法
      * 读取id为source的列表，获取其中城市名字及城市对应的空气质量
@@ -39,17 +42,6 @@
          coding here
          */
 
-        if (typeof data == "undefined") {
-            source = document.getElementById("source");
-            data = [];
-            for (var i in source.children) {
-                if (!isNaN(i)) {
-                    var li = source.children[i];
-                    data.push([resolveCity(li.childNodes[0].data), li.childNodes[1].innerText]);
-                }
-            }
-        }
-
         /*
          data = [
          ["北京", 90],
@@ -58,9 +50,17 @@
          ]
          */
 
+        if (aqiData == null) {
+            aqiData = [];
+            for (var i in source.children) {
+                if (!isNaN(i)) {
+                    var li = source.children[i];
+                    aqiData.push([resolveCity(li.childNodes[0].data), li.childNodes[1].innerText]);
+                }
+            }
+        }
 
-        return data;
-
+        return aqiData;
     }
 
     function resolveCity(data) {
@@ -85,15 +85,10 @@
      * 格式见ul中的注释的部分
      */
     function render(data) {
-        if (typeof resort == "undefined") {
-            resort = document.getElementById("resort");
-        }
-
         var result = "";
         for (var i in data) {
             result += makeList(+i + 1, data[i]);
         }
-
         resort.innerHTML = result;
     }
 
