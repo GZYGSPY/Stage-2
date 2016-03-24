@@ -1,0 +1,43 @@
+
+.aqi-chart-wrap {
+  position: relative;
+  margin-top: 50px;
+  .histogram-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    margin: auto;
+    white-space: nowrap;
+
+    div {
+      display: inline-block;
+      animation: in;
+      animation-duration: 1.5s;
+      -webkit-animation:in 1.5s;
+    }
+
+    .week {
+      margin-left: 10px;
+      width: 70px;
+    }
+    .day {
+      margin-left: 5px;
+      width: 10px;
+    }
+    .month {
+      margin-left: 15px;
+      width: 300px;
+    }
+    &:first-child {
+      margin-left: 0px;
+    }
+  }
+}
+
+@keyframes in {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
