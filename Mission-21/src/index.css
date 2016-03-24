@@ -1,0 +1,47 @@
+        ul {
+            margin: 10px 0;
+        }
+        button {
+            background: #fff;
+            border: 1px solid #999;
+            border-radius: 4px;
+        }
+        label {
+            height: 30px;
+        }
+        .TagComponent{
+            margin: 20px 0; 
+        }
+        .tag {
+            background: #ffc888;
+            color: #fff;
+            padding: 5px;
+            display: inline;
+            margin-right: 10px;
+        }
+        .tag.deleteable {
+            cursor: pointer;
+            background: #88ccff;
+        }
+        .TagComponent input:focus{
+            border: 1px solid #88ccff;
+            box-shadow: 0 0 2px 4px #88ccff;
+            outline: none;
+        }
+        .tag.deleteable:hover {
+            background: #ff0000;
+        }
+        .tag.deleteable:before{
+            display: inline-block;
+            content: "点击删除";
+            opacity: .5;
+            width: 0;
+            transition: .1s;
+            white-space: nowrap;
+            overflow: hidden;
+            vertical-align: top;
+        }
+        .tag.deleteable:hover:before{
+            opacity: 1;
+            width: 63px;
+        }
