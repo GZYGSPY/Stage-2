@@ -10,8 +10,13 @@ function Energy(spaceshipInterface) {
     this.spaceshipInterface = spaceshipInterface;
     //能源剩余量
     this.surplus = 100;
+    this.id = Math.random() + "";
 }
 
+/**
+ * 名称
+ * @type {string}
+ */
 Energy.prototype.name = "跟着勇哥刷py 太空飞船中型能源电池"
 
 /**
@@ -43,10 +48,21 @@ Energy.property.on = function () {
     }
 
     //注册进飞船接口
-    this.spaceshipInterface.energy = this;
+    if (this.spaceshipInterface.energy) this.spaceshipInterface.energy[this.id] = this;
 
     console.info("剩余" + this.surplus + "点能量");
 };
+
+/**
+ * 关机
+ */
+Energy.property.off = function () {
+    if (this.spaceshipInterface) {
+        if (this.spaceshipInterface.energy) {
+            delete this.spaceshipInterface.energy[this.id];
+        }
+    }
+}
 
 Energy.prototype.collect = function (power) {
     //如果收集的能量超过能源系统最大容量，则丢弃多余能量
@@ -75,6 +91,7 @@ function Engine(spaceshipInterface) {
     this.spaceshipInterface = spaceshipInterface;
     //功率
     this.power = 5;
+    this.id = Math.random() + "";
 }
 
 Engine.prototype.name = "跟着勇哥刷py 太空飞船引擎-1型";
@@ -96,7 +113,7 @@ Engine.prototype.on = function () {
     }
 
     //注册进飞船接口
-    this.spaceshipInterface.engine = this;
+    this.spaceshipInterface.engine[this.id] = this;
     //检查有没有能源系统
     if (!this.spaceshipInterface.energy) {
         console.error("找不到可用能源系统");
@@ -111,10 +128,21 @@ Engine.prototype.on = function () {
 };
 
 /**
+ * 关机
+ */
+Engine.prototype.off = function () {
+    if (this.spaceshipInterface) {
+        if (this.spaceshipInterface.engine) {
+            delete this.spaceshipInterface.engine[this.id];
+        }
+    }
+}
+
+/**
  * 设置功率
  * @param power
  */
-Engine.prototype.setPower = function (power){
+Engine.prototype.setPower = function (power) {
     this.power = power;
 };
 
@@ -145,6 +173,7 @@ function Radio(spaceshipInterface) {
     //飞船上的无线电系统（插槽）
     this.spaceshipInterface = spaceshipInterface;
     this.list = [];
+    this.id = Math.random() + "";
 }
 
 /**
@@ -154,7 +183,6 @@ Radio.prototype.on = function () {
     //开机
     console.log("开始接受无线电");
 
-
     //自检
     if (!this.spaceshipInterface) {
         console.error("接口故障，请检查动力系统插槽是否松动！！");
@@ -162,7 +190,7 @@ Radio.prototype.on = function () {
     }
 
     //注册进飞船接口
-    this.spaceshipInterface.engine = this;
+    this.spaceshipInterface.radio[this.id] = this;
 
     //系统接口中的消息接收器
     if (!this.spaceshipInterface.messageListener) {
@@ -170,6 +198,24 @@ Radio.prototype.on = function () {
     }
 
     //注册到太空
+    if (this.spaceshipInterface.space) {
+        this.space = this.spaceshipInterface.space;
+        this.space.addRadio(this);
+    } else {
+        console.error("消息接收器无法探测到太空")
+    }
+};
+
+/**
+ * 关机
+ */
+Radio.prototype.off = function () {
+    //注销飞船接口
+    if (this.spaceshipInterface) {
+        if (this.spaceshipInterface.radio) delete this.spaceshipInterface.radio[this.id];
+        if (this.space) this.space.removeRadio(this);
+    }
+
 };
 
 Radio.prototype.getMessageListener = function () {
@@ -192,7 +238,9 @@ Radio.prototype.getMessageListener = function () {
 };
 
 Radio.prototype.receivedMessage = function (message) {
-    this.getMessageListener().notify(message);
+    if (message.id == this.spaceshipInterface.id) {
+        this.getMessageListener().notify(message);
+    }
 };
 
 /**
@@ -229,11 +277,10 @@ function Spaceship(id, space) {
         }
     };
 
-
     /**
      * 初始化此飞船的内部接口
      * @param that: Spaceship
-     * @returns {{id: int, space: Space, name: string, messageListener: {notify: messageListener.notify}}}
+     * @returns {{id: number, space: Space, name: string, messageListener: {notify: messageListener.notify}}}
      * @constructor
      */
     this.initSpaceshipInterface = function () {
@@ -242,14 +289,15 @@ function Spaceship(id, space) {
             id: that.id,
             space: that.space,
             name: that.name,
-            get energy() {return this.energy[0]},
-            set energy(n) {this.energy.push(n)},
-            get engine() {return this.engine[0]},
-            set engine(n) {this.engine.push(n)},
-            get radio() {return this.radio[0]},
-            set radio(n) {this.radio.push(n)},
-            get status() {return status},
-            set status(n) {this.status = status},
+            energy: [],
+            engine: [],
+            radio: [],
+            get status() {
+                return status
+            },
+            set status(n) {
+                this.status = n
+            },
             messageListener: {
                 notify: function (message) {
                     console.debug("飞船消息接收器已经接收到消息", message);
@@ -280,7 +328,6 @@ Spaceship.prototype.frames = {
  * @type {{}}
  */
 Spaceship.prototype.spaceshipInterface = {};
-
 
 /**
  * 飞船总电源开机系统

@@ -4,30 +4,36 @@
  * 无线电传输丢包率 30%
  */
 
-function space(){
+function Space() {
     //时钟
     var time = 0;
 
     //反推
-    var pushBack = function(){
+    var pushBack = function () {
 
     }
 
     //宇宙中的物体
-    this.item = {
-
-    }
+    this.item = {}
 
     //宇宙中的无线电接收器
-    this.radioListener = [];
+    this.radios = [];
 
     //收到能量
-    this.receiveEnergy = function(){
-
+    this.receiveEnergy = function (power) {
+        console.log(power);
     }
 
     //辐射能量
-    this.radiantEnergy = function(){
+    this.radiantEnergy = function () {
 
     }
+}
+
+Space.prototype.addRadio = function (radio) {
+    this.radios[radio.id] = radio;
+}
+
+Space.prototype.removeRadio = function (radio) {
+    delete this.radios[radio.id];
 }
