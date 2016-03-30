@@ -46,7 +46,7 @@ Energy.property.on = function () {
     this.spaceshipInterface.energy = this;
 
     console.info("剩余" + this.surplus + "点能量");
-}
+};
 
 Energy.prototype.collect = function (power) {
     //如果收集的能量超过能源系统最大容量，则丢弃多余能量
@@ -54,7 +54,7 @@ Energy.prototype.collect = function (power) {
     //功率控制
     this.surplus += power > 0 ? (power <= this.maxIn ? power : this.maxIn) : 0;
     return power;
-}
+};
 
 Energy.prototype.consume = function (power) {
     //如果剩余容量不足，则只能提供较少能量
@@ -62,7 +62,7 @@ Energy.prototype.consume = function (power) {
     //功率控制
     this.surplus -= power > 0 ? (power <= this.maxOut ? power : this.maxOut) : 0;
     return power;
-}
+};
 
 /**
  * 动力系统 跟着勇哥刷py 太空飞船引擎-1型
@@ -73,6 +73,8 @@ Energy.prototype.consume = function (power) {
 function Engine(spaceshipInterface) {
     //飞船上的动力系统接口（插槽）
     this.spaceshipInterface = spaceshipInterface;
+    //功率
+    this.power = 5;
 }
 
 Engine.prototype.name = "跟着勇哥刷py 太空飞船引擎-1型";
@@ -96,27 +98,46 @@ Engine.prototype.on = function () {
     //注册进飞船接口
     this.spaceshipInterface.engine = this;
     //检查有没有能源系统
+    if (!this.spaceshipInterface.energy) {
+        console.error("找不到可用能源系统");
+    }
 
     //检查有没有放到可飞行的环境中
+    if (this.spaceshipInterface.space) {
+        this.space = this.spaceshipInterface.space;
+    } else {
+        console.error("找不到可飞行的环境");
+    }
+};
 
-}
+/**
+ * 设置功率
+ * @param power
+ */
+Engine.prototype.setPower = function (power){
+    this.power = power;
+};
 
 /**
  * 开始输出动力
  */
 Engine.prototype.start = function () {
-
-}
+    this.spaceshipInterface.status = Status.START;
+    //开始引擎线程
+    var power = this.spaceshipInterface.energy.consume(this.power);
+    this.space.receiveEnergy(power);
+};
 
 /**
  * 停止输出动力
  */
 Engine.property.stop = function () {
-
-}
+    this.spaceshipInterface.status = Status.STOP;
+    //停止引擎线程
+};
 
 /**
- *
+ * 无线电类
  * @param spaceshipInterface
  * @constructor
  */
@@ -168,11 +189,11 @@ Radio.prototype.getMessageListener = function () {
     }
 
     return this.spaceshipInterface.messageListener;
-}
+};
 
 Radio.prototype.receivedMessage = function (message) {
     this.getMessageListener().notify(message);
-}
+};
 
 /**
  * 飞船---型号：跟着勇哥刷py-原型机
@@ -194,34 +215,45 @@ function Spaceship(id, space) {
         this.id = id;
         this.space = space;
         this.on();
-    }
+    };
 
     //取得图像
     this.getFrame = function (time) {
         return frames[status][time / frames[status].length - 1];
-    }
+    };
 
     //自爆系统，用于自我销毁
     this.blew = {
         start: function () {
 
         }
-    }
+    };
 
 
     /**
-     * 此飞船的内部接口类
+     * 初始化此飞船的内部接口
      * @param that: Spaceship
      * @returns {{id: int, space: Space, name: string, messageListener: {notify: messageListener.notify}}}
      * @constructor
      */
-    this.SpaceshipInterface = function (that) {
-        this.id = that.id;
-        this.space = that.space;
-        this.name = that.name;
-        this.messageListener = {
-            notify: function (message) {
-                console.debug("飞船消息接收器已经接收到消息", message);
+    this.initSpaceshipInterface = function () {
+        var that = this;
+        this.spaceshipInterface = {
+            id: that.id,
+            space: that.space,
+            name: that.name,
+            get energy() {return this.energy[0]},
+            set energy(n) {this.energy.push(n)},
+            get engine() {return this.engine[0]},
+            set engine(n) {this.engine.push(n)},
+            get radio() {return this.radio[0]},
+            set radio(n) {this.radio.push(n)},
+            get status() {return status},
+            set status(n) {this.status = status},
+            messageListener: {
+                notify: function (message) {
+                    console.debug("飞船消息接收器已经接收到消息", message);
+                }
             }
         }
     };
@@ -255,19 +287,19 @@ Spaceship.prototype.spaceshipInterface = {};
  */
 Spaceship.prototype.on = function () {
     //初始化接口
-    this.spaceshipInterface = new this.SpaceshipInterface(this);
+    this.initSpaceshipInterface();
 
     //能源系统，提供能源，并且在宇宙中通过太阳能充电（比如每秒增加2%，具体速率自定）
     //1.装载能源系统
-    this.energy = new Energy(this.spaceshipInterface);
+    var energy = new Energy(this.spaceshipInterface);
     //动力系统，可以完成飞行和停止飞行两个行为，暂定所有飞船的动力系统飞行速度是一致的，比如每秒20px，飞行过程中会按照一定速率消耗能源（比如每秒减5%）
     //2.装载动力系统
-    this.engine = new Engine(this.spaceshipInterface);
+    var engine = new Engine(this.spaceshipInterface);
     //信号接收处理系统，用于接收行星上的信号
     //3.装载信号接收处理系统
-    this.radio = new Radio(this.spaceshipInterface);
+    var radio = new Radio(this.spaceshipInterface);
 
-    this.energy.on();
-    this.engine.on();
-    this.radio.on();
-}
+    energy.on();
+    engine.on();
+    radio.on();
+};
