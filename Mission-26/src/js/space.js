@@ -13,7 +13,7 @@ Timer.prototype.tita = function () {
     //所有注册时钟
     var now = new Date();
     for (var i = 0, len = this.listener.length; i < len; i++) {
-        this.listener[i](now - this.lastDate);
+        setTimeout(function (listener,speed) {return function () {listener(speed)}}(this.listener[i],now - this.lastDate), 0);
     }
     this.lastDate = now;
 }
@@ -122,3 +122,5 @@ Space.prototype.radiantEnergy = function (power) {
         this.energyReceiver[i].collect(power);
     }
 };
+
+//增加

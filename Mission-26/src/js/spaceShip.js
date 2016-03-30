@@ -3,6 +3,7 @@
  * 性能详情：最大输出功率  5
  *              最大输入功率  4
  *              最大容量       200
+ *              太阳能电板    1
  * @param spaceshipInterface 飞船上的动力系统接口
  * @constructor
  */
@@ -40,7 +41,7 @@ Energy.prototype.maxSurplus = 200;
 /**
  * 开机
  */
-Energy.property.on = function () {
+Energy.prototype.on = function () {
     //自检
     if (!this.spaceshipInterface) {
         console.error("接口故障，请检查动力系统插槽是否松动！！");
@@ -50,13 +51,16 @@ Energy.property.on = function () {
     //注册进飞船接口
     if (this.spaceshipInterface.energy) this.spaceshipInterface.energy[this.id] = this;
 
+    //将太阳能电板注册到太空
+    if (this.spaceshipInterface.space) this.spaceshipInterface.space.addEnergyReceiver(this);
+
     console.info("剩余" + this.surplus + "点能量");
 };
 
 /**
  * 关机
  */
-Energy.property.off = function () {
+Energy.prototype.off = function () {
     if (this.spaceshipInterface) {
         if (this.spaceshipInterface.energy) {
             delete this.spaceshipInterface.energy[this.id];
@@ -66,7 +70,7 @@ Energy.property.off = function () {
 
 Energy.prototype.collect = function (power) {
     //如果收集的能量超过能源系统最大容量，则丢弃多余能量
-    power = this.maxSurplus - this.surplus > power ? power : this.surplus;
+    power = this.maxSurplus - this.surplus > power ? power : this.maxSurplus - this.surplus;
     //功率控制
     this.surplus += power > 0 ? (power <= this.maxIn ? power : this.maxIn) : 0;
     return power;
@@ -159,7 +163,7 @@ Engine.prototype.start = function () {
 /**
  * 停止输出动力
  */
-Engine.property.stop = function () {
+Engine.prototype.stop = function () {
     this.spaceshipInterface.status = Status.STOP;
     //停止引擎线程
 };
@@ -237,7 +241,7 @@ Radio.prototype.getMessageListener = function () {
     return this.spaceshipInterface.messageListener;
 };
 
-Radio.prototype.receivedMessage = function (message) {
+Radio.prototype.receiveMessage = function (message) {
     if (message.id == this.spaceshipInterface.id) {
         this.getMessageListener().notify(message);
     }
@@ -256,14 +260,11 @@ Radio.prototype.receivedMessage = function (message) {
  */
 function Spaceship(id, space) {
 
-    var status = Status.INIT;
+    this.status = Status.INIT;
 
     //飞船总系统开机
-    this.constructor = function () {
-        this.id = id;
-        this.space = space;
-        this.on();
-    };
+    this.id = id;
+    this.space = space;
 
     //取得图像
     this.getFrame = function (time) {
@@ -289,9 +290,9 @@ function Spaceship(id, space) {
             id: that.id,
             space: that.space,
             name: that.name,
-            energy: [],
-            engine: [],
-            radio: [],
+            energy: {},
+            engine: {},
+            radio: {},
             get status() {
                 return status
             },
@@ -306,14 +307,6 @@ function Spaceship(id, space) {
         }
     };
 }
-
-Status = {
-    INIT: "init",
-    TAKEOFF: "takeoff",
-    LANDING: "landing",
-    START: "start",
-    STOP: "stop"
-};
 
 Spaceship.prototype.frames = {
     0: [],
@@ -333,20 +326,31 @@ Spaceship.prototype.spaceshipInterface = {};
  * 飞船总电源开机系统
  */
 Spaceship.prototype.on = function () {
-    //初始化接口
-    this.initSpaceshipInterface();
+    if (this.status == Status.INIT) {
+        this.status = Status.TAKEOFF;
+        //初始化接口
+        this.initSpaceshipInterface();
 
-    //能源系统，提供能源，并且在宇宙中通过太阳能充电（比如每秒增加2%，具体速率自定）
-    //1.装载能源系统
-    var energy = new Energy(this.spaceshipInterface);
-    //动力系统，可以完成飞行和停止飞行两个行为，暂定所有飞船的动力系统飞行速度是一致的，比如每秒20px，飞行过程中会按照一定速率消耗能源（比如每秒减5%）
-    //2.装载动力系统
-    var engine = new Engine(this.spaceshipInterface);
-    //信号接收处理系统，用于接收行星上的信号
-    //3.装载信号接收处理系统
-    var radio = new Radio(this.spaceshipInterface);
+        //能源系统，提供能源，并且在宇宙中通过太阳能充电（比如每秒增加2%，具体速率自定）
+        //1.装载能源系统
+        var energy = new Energy(this.spaceshipInterface);
+        //动力系统，可以完成飞行和停止飞行两个行为，暂定所有飞船的动力系统飞行速度是一致的，比如每秒20px，飞行过程中会按照一定速率消耗能源（比如每秒减5%）
+        //2.装载动力系统
+        var engine = new Engine(this.spaceshipInterface);
+        //信号接收处理系统，用于接收行星上的信号
+        //3.装载信号接收处理系统
+        var radio = new Radio(this.spaceshipInterface);
 
-    energy.on();
-    engine.on();
-    radio.on();
+        energy.on();
+        engine.on();
+        radio.on();
+    }
+};
+
+Status = {
+    INIT: "init",
+    TAKEOFF: "takeoff",
+    LANDING: "landing",
+    START: "start",
+    STOP: "stop"
 };
