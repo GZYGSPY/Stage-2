@@ -5,14 +5,17 @@
 function Timer(interval) {
     this.interval = interval;
     this.listener = [];
+    this.lastDate = new Date();
     setInterval(this.tita.bind(this), interval);
 }
 
 Timer.prototype.tita = function () {
     //所有注册时钟
+    var now = new Date();
     for (var i = 0, len = this.listener.length; i < len; i++) {
-        this.listener[i]();
+        this.listener[i](now - this.lastDate);
     }
+    this.lastDate = now;
 }
 
 Timer.prototype.addListener = function (listener) {
@@ -71,15 +74,11 @@ function Space() {
     this.energyReceiver = {};
 
 
-    this.date = new Date();
-
     //时钟
     this.timer = new Timer(1000 / 60);
 
-    this.timer.addListener(function () {
-        var now = new Date();
-        this.radiantEnergy(this.radiationEnergyPerSecond / ((now - this.date) / 1000));
-        this.date = now;
+    this.timer.addListener(function (speed) {
+        this.radiantEnergy(this.radiationEnergyPerSecond * speed / 1000);
     }.bind(this))
 }
 
