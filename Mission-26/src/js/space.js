@@ -1,13 +1,12 @@
 /**
  * 宇宙类
- * 每秒辐射
+ * 每秒辐射 5能量
+ * 无线电传输丢包率 30%
  */
 
 function space(){
     //时钟
     var time = 0;
-
-
 
     //反推
     var pushBack = function(){
@@ -19,8 +18,8 @@ function space(){
 
     }
 
-    //宇宙中的无线电
-    this.radios = [];
+    //宇宙中的无线电接收器
+    this.radioListener = [];
 
     //收到能量
     this.receiveEnergy = function(){
