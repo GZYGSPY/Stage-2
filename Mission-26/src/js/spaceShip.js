@@ -211,22 +211,20 @@ function Spaceship(id, space) {
 
     /**
      * 此飞船的内部接口类
-     * @param that Spaceship
+     * @param that: Spaceship
      * @returns {{id: int, space: Space, name: string, messageListener: {notify: messageListener.notify}}}
      * @constructor
      */
     this.SpaceshipInterface = function (that) {
-        return {
-            id: that.id,
-            space: that.space,
-            name: that.name,
-            messageListener: {
-                notify: function (message) {
-                    console.debug("飞船消息接收器已经接收到消息", message);
-                }
+        this.id = that.id;
+        this.space = that.space;
+        this.name = that.name;
+        this.messageListener = {
+            notify: function (message) {
+                console.debug("飞船消息接收器已经接收到消息", message);
             }
-        };
-    }
+        }
+    };
 }
 
 Status = {
